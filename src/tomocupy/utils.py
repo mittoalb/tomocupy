@@ -299,6 +299,7 @@ def downsampleZarr(volume, scale_factor):
     return downsampled
     
     
+    
 def clean_zarr(output_path):
     if os.path.exists(output_path):
         try:

@@ -494,7 +494,8 @@ def create_zarr(store, output_path, base_shape, chunks, dtype, num_levels, scale
     for level, scale_factor in enumerate(scale_factors):
         level_name = f"{level}"
         scale = float(scale_factor)
-
+        scalef = 2 ** level
+        
         # Create the dataset for this resolution level
         root_group.create_dataset(
             name=level_name,
@@ -508,7 +509,8 @@ def create_zarr(store, output_path, base_shape, chunks, dtype, num_levels, scale
         datasets.append({
             "path": level_name,
             "coordinateTransformations": [
-                {"type": "scale", "scale": [scale] * len(base_shape)}
+                {"type": "scale", "scale": [scalef] * 3},
+                {"type": "translation", "translation": [2**(level-1) - 0.5, 2**(level-1) - 0.5, 2**(level-1) - 0.5]}
             ]
         })
 
@@ -547,7 +549,8 @@ def load_zarr(store, output_path, num_levels):
         datasets.append({
             "path": level_name,
             "coordinateTransformations": [
-                {"type": "scale", "scale": None}  # Add scale details if needed
+                {"type": "scale", "scale": None},
+                {"type": "translation", "translation": [2**(level-1) - 0.5, 2**(level-1) - 0.5, 2**(level-1) - 0.5]}
             ]
         })
 
